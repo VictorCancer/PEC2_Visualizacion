@@ -1,0 +1,66 @@
+
+```{r,message=FALSE,warning=FALSE,results='hide',quietly = TRUE,include=FALSE}
+library(ggplot2)
+library(corrplot)
+library(dplyr)
+```
+
+
+
+https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data
+
+
+
+
+
+
+```{r}
+cancer_data <- read.table(file="cancer_data.csv",sep=',',dec='.',stringsAsFactors = TRUE,header=TRUE,encoding="UTF-8")
+summary(cancer_data)
+
+names(cancer_data)[names(cancer_data) == "radius_mean"] <- "Radio"
+names(cancer_data)[names(cancer_data) == "smoothness_mean"] <- "Suavidad"
+names(cancer_data)[names(cancer_data) == "symmetry_mean"] <- "Simetria"
+names(cancer_data)[names(cancer_data) == "concavity_mean"] <- "Concavidad"
+```
+
+
+
+```{r}
+my_cols <- c("green3", "red")  
+
+panel.cor <- function(x, y){
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- round(cor(x, y), digits=2)
+    txt <- paste0("R = ", r)
+    cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+# Customize upper panel
+upper.panel<-function(x, y){
+  points(x,y, pch = 19, col = my_cols[cancer_data$diagnosis])
+}
+
+par( xpd=TRUE)
+
+
+# Create the plots
+pairs(cancer_data[,c('Radio','Suavidad','Simetria','Concavidad')], 
+      lower.panel = panel.cor,
+      upper.panel = upper.panel,
+      main = "Células benignas y malignas", oma=c(3,3,5,10)
+      )
+
+
+legend("right", 
+        , fill = my_cols, 
+       legend = c(levels(cancer_data$diagnosis)) )
+```
+
+
+
+
+
+
+
